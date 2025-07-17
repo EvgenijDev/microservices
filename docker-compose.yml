@@ -71,6 +71,8 @@ services:
 
   node:
     image: node:20
+    ports:
+      - "5173:5173" # Должен быть проброс
     container_name: microservice-node
     working_dir: /var/www
     volumes:
@@ -79,6 +81,9 @@ services:
     networks:
       - microservice-network
     command: sh -c "npm install && npm run dev"
+    environment:
+      - VITE_APP_URL=http://localhost:8080
+      - VITE_DEV_SERVER_HOST=0.0.0.0
 
 networks:
   microservice-network:

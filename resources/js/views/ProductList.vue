@@ -44,6 +44,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useProductStore } from '../stores/product';
+import { storeToRefs } from 'pinia'
 
 const productStore = useProductStore();
 const { products, loading, error } = storeToRefs(productStore);

@@ -1,24 +1,73 @@
-*.log
+# Системные файлы
 .DS_Store
+Thumbs.db
+
+# Локальные конфиги
 .env
 .env.backup
 .env.production
-.phpactor.json
+.env.local
+.env.testing
+
+# Логи и кэш
+*.log
 .phpunit.result.cache
+.phpunit.cache
+/storage/pail
+
+# IDE и редакторы
 /.fleet
 /.idea
 /.nova
-/.phpunit.cache
 /.vscode
 /.zed
-/auth.json
-/node_modules
-/public/build
+.phpactor.json
+
+# Laravel
+/vendor
+/bootstrap/cache/*
 /public/hot
 /public/storage
 /storage/*.key
-/storage/pail
-/vendor
 Homestead.json
 Homestead.yaml
-Thumbs.db
+auth.json
+
+# Node.js
+/node_modules
+/node_modules/*
+/.npm
+/.pnpm
+/.yarn
+/yarn-error.log
+package-lock.json
+pnpm-lock.json
+yarn.lock
+
+# Frontend сборка
+/public/build
+/dist
+/.vite-inspect
+
+# Docker данные
+/docker/mysql/*
+/docker/redis/*
+!/docker/nginx/default.conf  # Сохраняем только конфиг Nginx
+
+# Временные файлы Docker
+docker-compose.override.yml
+*.dockerignore
+
+# Vite кэш
+.cache/
+.temp/
+
+# Тесты
+/coverage
+.nyc_output
+
+# Документация
+/docs/_build/
+
+/.history
+/*.code-workspace

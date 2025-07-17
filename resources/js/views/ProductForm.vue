@@ -56,6 +56,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useProductStore } from '../stores/product';
+import { storeToRefs } from 'pinia'
 
 const route = useRoute();
 const router = useRouter();
