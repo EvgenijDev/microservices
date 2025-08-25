@@ -1,12 +1,27 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import ProductList from '../views/ProductList.vue';
-import ProductForm from '../views/ProductForm.vue';
+// import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import ProductList from '../views/ProductList.vue'
+import ProductForm from '../views/ProductForm.vue'
+import ProductAuth from '../components/ProductAuth.vue'
+import RegisterForm from '../components/Register.vue'
+import LoginForm from '../components/Login.vue'
 
 const routes = [
     {
         path: '/',
         redirect: '/products'
     },
+    {
+        path: '/login',
+        name: 'login',
+        component: LoginForm
+    },
+    {
+        path: '/register',
+        name: 'register',
+        component: RegisterForm
+    },
+
     {
         path: '/products',
         name: 'products',
@@ -23,11 +38,16 @@ const routes = [
         component: ProductForm,
         props: true
     }
-];
+]
+
+// const router = createRouter({
+//     history: createWebHistory(import.meta.env.BASE_URL),
+//     routes
+// })
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+    history: createWebHashHistory(),
     routes
-});
+})
 
-export default router;
+export default router

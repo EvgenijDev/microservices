@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import api from '../api/api'
 
 export const useProductStore = defineStore('product', {
     state: () => ({
@@ -11,7 +12,8 @@ export const useProductStore = defineStore('product', {
         async fetchProducts () {
             this.loading = true
             try {
-                const response = await axios.get('/api/v1/products')
+                const response = await api.get('/products');
+                // const response = await axios.get('/api/v1/products')
                 this.products = response.data
             } catch (error) {
                 this.error = error
@@ -22,8 +24,8 @@ export const useProductStore = defineStore('product', {
         async createProduct (productData) {
             this.loading = true
             try {
-                const response = await axios.post(
-                    '/api/v1/products',
+                const response = await api.post(
+                    '/products',
                     productData
                 )
                 this.products.push(response.data)
@@ -38,8 +40,8 @@ export const useProductStore = defineStore('product', {
         async updateProduct ({ id, ...productData }) {
             this.loading = true
             try {
-                const response = await axios.put(
-                    `/api/v1/products/${id}`,
+                const response = await api.put(
+                    `/products/${id}`,
                     productData
                 )
                 const index = this.products.findIndex(p => p.id === id)
@@ -57,7 +59,7 @@ export const useProductStore = defineStore('product', {
         async deleteProduct (id) {
             this.loading = true
             try {
-                await axios.delete(`/api/v1/products/${id}`)
+                await api.delete(`/products/${id}`)
                 this.products = this.products.filter(p => p.id !== id)
             } catch (error) {
                 this.error = error
