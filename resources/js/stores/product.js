@@ -69,7 +69,7 @@ export const useProductStore = defineStore('product', {
             }
         },
         async getProductById (id) {
-            const response = await axios.get(`/api/v1/products/${id}`)
+            const response = await api.get(`/products/${id}`)
             return response.data
         }
     }
