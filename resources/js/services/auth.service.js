@@ -1,28 +1,44 @@
 import api from '../api/api'
+import { useAuthStore } from '../stores/auth'
 
 export default {
     login (email, password) {
-        return api.post('/login', { email, password }).then(response => {
-            localStorage.setItem('api_token', response.data.token)
+        const authStore = useAuthStore()
+        return api.post('/login', { email, password }).then(async response => {
+            authStore.setToken(response.data.token)
+            // получить профиль пользователя
+            const me = await api.get('/me')
+            authStore.setUser(me.data)
             return response
         })
     },
     logout () {
+        const authStore = useAuthStore()
         return api.post('/logout').then(() => {
-            localStorage.removeItem('api_token')
+            authStore.clearToken()
         })
     },
     getToken () {
-        return localStorage.getItem('api_token')
+        const authStore = useAuthStore()
+        return authStore.token
     },
     isAuthenticated () {
-        return !!localStorage.getItem('api_token')
+        const authStore = useAuthStore()
+        return authStore.isAuthenticated
     },
     register (name, email, password, password_confirmation) {
+        const authStore = useAuthStore()
         return api
             .post('/register', { name, email, password, password_confirmation })
-            .then(response => {
-                localStorage.setItem('api_token', response.data.token)
+            .then(async response => {
+                authStore.setToken(response.data.token)
+                // при регистрации backend уже возвращает user, если нет — добираем /me
+                if (response.data.user) {
+                    authStore.setUser(response.data.user)
+                } else {
+                    const me = await api.get('/me')
+                    authStore.setUser(me.data)
+                }
                 return response
             })
     }
