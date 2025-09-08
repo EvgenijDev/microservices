@@ -18,6 +18,7 @@
                         <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Name</th>
                         <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Price</th>
                         <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Stock</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Image</th>
                         <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Actions</th>
                     </tr>
                 </thead>
@@ -27,6 +28,14 @@
                         <td class="px-4 py-3 text-sm text-gray-900 font-medium">{{ product.name }}</td>
                         <td class="px-4 py-3 text-sm text-gray-700">{{ product.price }}</td>
                         <td class="px-4 py-3 text-sm text-gray-700">{{ product.stock }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-700">
+                            <img
+                                v-if="product.thumb_path || product.image_path"
+                                :src="imageUrl(product)"
+                                alt="Image"
+                                class="h-12 w-12 object-cover rounded"
+                            />
+                        </td>
                         <td class="px-4 py-3">
                             <div class="flex justify-end gap-2">
                                 <router-link 
@@ -66,4 +75,11 @@ const deleteProduct = (id) => {
         productStore.deleteProduct(id);
     }
 };
+
+const imageUrl = (product) => {
+    const base = import.meta.env.VITE_APP_URL || window.location.origin
+    const path = product.thumb_path || product.image_path
+    // files stored on "public" disk → served as /storage/{path}
+    return `${base}/storage/${path}`
+}
 </script>

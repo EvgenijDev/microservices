@@ -25,7 +25,12 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request): JsonResponse
     {
-        $product = $this->productService->createProduct($request->validated());
+        $payload = $request->validated();
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $payload['image_path'] = $path;
+        }
+        $product = $this->productService->createProduct($payload);
         return response()->json(new ProductResource($product), 201);
     }
 
@@ -37,7 +42,12 @@ class ProductController extends Controller
 
     public function update(ProductRequest $request, int $id): JsonResponse
     {
-        $product = $this->productService->updateProduct($request->validated(), $id);
+        $payload = $request->validated();
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $payload['image_path'] = $path;
+        }
+        $product = $this->productService->updateProduct($payload, $id);
         return response()->json(new ProductResource($product));
     }
 

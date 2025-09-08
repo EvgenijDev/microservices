@@ -37,6 +37,19 @@ export const useProductStore = defineStore('product', {
                 this.loading = false
             }
         },
+        async createProductFormData (formData) {
+            this.loading = true
+            try {
+                const response = await api.post('/products', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+                this.products.push(response.data)
+                return response.data
+            } catch (error) {
+                this.error = error
+                throw error
+            } finally {
+                this.loading = false
+            }
+        },
         async updateProduct ({ id, ...productData }) {
             this.loading = true
             try {
@@ -44,6 +57,22 @@ export const useProductStore = defineStore('product', {
                     `/products/${id}`,
                     productData
                 )
+                const index = this.products.findIndex(p => p.id === id)
+                if (index !== -1) {
+                    this.products[index] = response.data
+                }
+                return response.data
+            } catch (error) {
+                this.error = error
+                throw error
+            } finally {
+                this.loading = false
+            }
+        },
+        async updateProductFormData (id, formData) {
+            this.loading = true
+            try {
+                const response = await api.post(`/products/${id}?_method=PUT`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
                 const index = this.products.findIndex(p => p.id === id)
                 if (index !== -1) {
                     this.products[index] = response.data

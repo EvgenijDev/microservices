@@ -5,7 +5,7 @@
             <span v-else>Edit Product</span>
         </h1>
         
-        <form @submit.prevent="submitForm" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 space-y-4">
+        <form @submit.prevent="submitForm" class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 space-y-4" enctype="multipart/form-data">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div class="col-span-1">
                     <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
@@ -25,6 +25,21 @@
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                         rows="3"
                     ></textarea>
+                </div>
+                
+                <div class="col-span-1 sm:col-span-2">
+                    <label for="image" class="block text-sm font-medium text-gray-700">Image</label>
+                    <div class="mt-1 flex items-center gap-4">
+                        <img v-if="previewUrl || existingImageUrl" :src="previewUrl || existingImageUrl" alt="preview" class="h-16 w-16 object-cover rounded border" />
+                        <input 
+                            id="image" 
+                            type="file" 
+                            accept="image/*"
+                            @change="onFileChange"
+                            class="block w-full text-sm text-gray-700 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-blue-700 hover:file:bg-blue-100"
+                        />
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">Если файл не выбран — останется текущее изображение.</p>
                 </div>
 
                 <div class="col-span-1">
@@ -64,7 +79,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useProductStore } from '../stores/product';
 import { storeToRefs } from 'pinia'
@@ -79,27 +94,54 @@ const form = ref({
     name: '',
     description: '',
     price: 0,
-    stock: 0
+    stock: 0,
+    image: null,
+    image_path: null,
+    thumb_path: null
 });
+const previewUrl = ref('')
 
 onMounted(async () => {
     if (productId) {
         const product = await productStore.getProductById(productId);
-        console.log(product)
-        form.value = { ...product };
+        form.value = { ...product, image: null };
     }
 });
 
 const submitForm = async () => {
     try {
+        const data = new FormData()
+        data.append('name', form.value.name)
+        data.append('description', form.value.description || '')
+        data.append('price', form.value.price)
+        data.append('stock', form.value.stock)
+        if (form.value.image) data.append('image', form.value.image)
+
         if (productId) {
-            await productStore.updateProduct({ id: productId, ...form.value });
+            await productStore.updateProductFormData(productId, data)
         } else {
-            await productStore.createProduct(form.value);
+            await productStore.createProductFormData(data)
         }
         router.push({ name: 'products' });
     } catch (error) {
         console.error('Error saving product:', error);
     }
 };
+
+const onFileChange = (e) => {
+    const files = e.target.files
+    const file = files && files[0] ? files[0] : null
+    form.value.image = file
+    if (file) {
+        previewUrl.value = URL.createObjectURL(file)
+    } else {
+        previewUrl.value = ''
+    }
+}
+
+const existingImageUrl = computed(() => {
+    const base = import.meta.env.VITE_APP_URL || window.location.origin
+    const path = form.value.thumb_path || form.value.image_path
+    return path ? `${base}/storage/${path}` : ''
+})
 </script>
