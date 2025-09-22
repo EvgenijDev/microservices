@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
+use App\Http\Requests\IndexProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
@@ -17,10 +18,10 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
-    public function index(): JsonResponse
+    public function index(IndexProductRequest $request): JsonResponse
     {
         $products = $this->productService->getAllProducts();
-        return response()->json(ProductResource::collection($products));
+        return ProductResource::collection($products)->response();
     }
 
     public function store(ProductRequest $request): JsonResponse

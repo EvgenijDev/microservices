@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\SearchController;
 
 
 
@@ -21,3 +22,5 @@ Route::prefix('v1')->group(function () {
 Route::get('v1/test', function () {
     return 'Test route works!';
 });
+
+Route::get('v1/search', [SearchController::class, 'search']);

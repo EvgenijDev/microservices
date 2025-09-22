@@ -11,4 +11,10 @@ class ProductRepository extends EloquentRepository implements ProductRepositoryI
     {
         parent::__construct($model);
     }
+
+
+    public function allPaginated($perPage = 4)
+    {
+        return Product::query()->orderBy('id', 'desc')->paginate($perPage);
+    }
 }

@@ -9,12 +9,16 @@ export const useProductStore = defineStore('product', {
         error: null
     }),
     actions: {
-        async fetchProducts () {
+        async fetchProducts (page=1) {
             this.loading = true
             try {
-                const response = await api.get('/products');
+                const response = await api.get(`/products?page=${page}`)
                 // const response = await axios.get('/api/v1/products')
-                this.products = response.data
+                this.products = {
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    links: response.data.links
+                }
             } catch (error) {
                 this.error = error
             } finally {
@@ -24,10 +28,7 @@ export const useProductStore = defineStore('product', {
         async createProduct (productData) {
             this.loading = true
             try {
-                const response = await api.post(
-                    '/products',
-                    productData
-                )
+                const response = await api.post('/products', productData)
                 this.products.push(response.data)
                 return response.data
             } catch (error) {
@@ -40,7 +41,9 @@ export const useProductStore = defineStore('product', {
         async createProductFormData (formData) {
             this.loading = true
             try {
-                const response = await api.post('/products', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+                const response = await api.post('/products', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                })
                 this.products.push(response.data)
                 return response.data
             } catch (error) {
@@ -53,11 +56,8 @@ export const useProductStore = defineStore('product', {
         async updateProduct ({ id, ...productData }) {
             this.loading = true
             try {
-                const response = await api.put(
-                    `/products/${id}`,
-                    productData
-                )
-                const index = this.products.findIndex(p => p.id === id)
+                const response = await api.put(`/products/${id}`, productData)
+                const index = this.products.data.findIndex(p => p.id === id)
                 if (index !== -1) {
                     this.products[index] = response.data
                 }
@@ -72,8 +72,12 @@ export const useProductStore = defineStore('product', {
         async updateProductFormData (id, formData) {
             this.loading = true
             try {
-                const response = await api.post(`/products/${id}?_method=PUT`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-                const index = this.products.findIndex(p => p.id === id)
+                const response = await api.post(
+                    `/products/${id}?_method=PUT`,
+                    formData,
+                    { headers: { 'Content-Type': 'multipart/form-data' } }
+                )
+                const index = this.products.data.findIndex(p => p.id === id)
                 if (index !== -1) {
                     this.products[index] = response.data
                 }
@@ -100,6 +104,30 @@ export const useProductStore = defineStore('product', {
         async getProductById (id) {
             const response = await api.get(`/products/${id}`)
             return response.data
+        },
+        async searchProduct (q, inStock) {
+            this.loading = true
+            try {
+                const params = {}
+        
+                if (q && q.trim() !== '') {
+                    params.q = q
+                }
+        
+                params.inStock = inStock   // ← всегда передаём true/false
+        
+                const response = await api.get('/search', { params })
+                this.products = {
+                    data: response.data.data,
+                    meta: response.data.meta,
+                    links: response.data.links
+                }
+            } catch (error) {
+                this.error = error
+            } finally {
+                this.loading = false
+            }
         }
+        
     }
 })
