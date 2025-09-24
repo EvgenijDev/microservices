@@ -26,10 +26,10 @@ export default {
         const authStore = useAuthStore()
         return authStore.isAuthenticated
     },
-    register (name, email, password, password_confirmation) {
+    register (name, email, gender, password, password_confirmation) {
         const authStore = useAuthStore()
         return api
-            .post('/register', { name, email, password, password_confirmation })
+            .post('/register', { name, email, gender, password, password_confirmation })
             .then(async response => {
                 authStore.setToken(response.data.token)
                 // при регистрации backend уже возвращает user, если нет — добираем /me
