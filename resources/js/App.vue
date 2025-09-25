@@ -4,13 +4,13 @@
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="h-16 flex items-center justify-between">
                     <nav class="flex items-center text-sm font-medium text-gray-700">
-                        <router-link v-slot="{ isActive }" to="/" class="px-2">
+                        <!-- <router-link v-slot="{ isActive }" to="/" class="px-2">
                             <span :class="isActive ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'">Home</span>
-                        </router-link>
-                        <span class="px-1 text-gray-300">|</span>
-                        <router-link v-slot="{ isActive }" to="/products" class="px-2">
+                        </router-link> -->
+                        <!-- <span class="px-1 text-gray-300">|</span> -->
+                        <!-- <router-link v-slot="{ isActive }" to="/products" class="px-2">
                             <span :class="isActive ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'">Products</span>
-                        </router-link>
+                        </router-link> -->
                         <span class="px-1 text-gray-300">|</span>
                         <router-link v-if="!isAuthenticated" v-slot="{ isActive }" to="/register" class="px-2">
                             <span :class="isActive ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'">Register</span>

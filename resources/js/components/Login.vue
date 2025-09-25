@@ -32,7 +32,7 @@ export default {
           this.email,
           this.password,
         );
-        this.$router.push('/'); // Перенаправление после успешной регистрации
+        this.$router.push('/profile'); // Перенаправление после успешной регистрации
       } catch (error) {
         console.error('Login failed:', error.response.data);
       }
