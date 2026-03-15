@@ -52,7 +52,8 @@
 <script>
 import authService from './services/auth.service'
 import { useAuthStore } from './stores/auth'
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import api from './api/api'
 
 export default {
     name: 'App',
@@ -80,6 +81,16 @@ export default {
                 console.error('Logout failed:', error)
             }
         }
+        onMounted(async () => {
+            if (authStore.token && !authStore.user) {
+                try {
+                    const { data } = await api.get('/me')
+                    authStore.setUser(data)
+                } catch (e) {
+                    authStore.clearToken()
+                }
+            }
+        })
 
         return { isAuthenticated, user, userInitials, dropdownOpen, toggleDropdown, logout }
     }

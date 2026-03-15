@@ -16,7 +16,9 @@ Route::prefix('v1')->group(function () {
 
 
 Route::prefix('v1')->group(function () {
+    Route::post('products/import', [ProductController::class, 'import'])->middleware('auth:sanctum');
     Route::apiResource('products', ProductController::class)->middleware('auth:sanctum');
+    Route::get('products/import/{import_id}/errors', [ProductController::class, 'getImportErrors'])->middleware('auth:sanctum');
 });
 
 Route::get('v1/test', function () {

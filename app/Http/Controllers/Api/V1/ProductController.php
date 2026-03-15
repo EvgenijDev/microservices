@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Http\Requests\IndexProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Jobs\ImportProductsJob;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 class ProductController extends Controller
 {
     private $productService;
@@ -56,5 +59,27 @@ class ProductController extends Controller
     {
         $this->productService->deleteProduct($id);
         return response()->json(null, 204);
+    }
+
+    public function import(Request $request): JsonResponse
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        $path = $request->file('file')->store('imports', 'local');
+        $import_id = Str::uuid();
+        ImportProductsJob::dispatch($path, $import_id);
+
+        return response()->json([
+            'message' => 'Импорт товаров поставлен в очередь.',
+            'import_id' => $import_id,
+        ], 202);
+    }
+
+    public function getImportErrors(string $import_id): JsonResponse
+    {
+        $errors = Cache::get('import_errors:' . $import_id);
+        return response()->json($errors);
     }
 }

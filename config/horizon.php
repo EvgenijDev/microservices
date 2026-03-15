@@ -14,6 +14,7 @@ return [
     'waits' => [
         'redis:default' => 60,
         'redis:media' => 60,
+        'redis:imports' => 60,
     ],
 
     'trim' => [
@@ -37,7 +38,7 @@ return [
         'local' => [
             'supervisor-media' => [
                 'connection' => 'redis',
-                'queue' => ['media', 'default'],
+                'queue' => ['media', 'imports', 'default'],
                 'balance' => 'simple',
                 'minProcesses' => 1,
                 'maxProcesses' => 3,
@@ -48,7 +49,7 @@ return [
         'production' => [
             'supervisor-media' => [
                 'connection' => 'redis',
-                'queue' => ['media', 'default'],
+                'queue' => ['media', 'imports', 'default'],
                 'balance' => 'auto',
                 'minProcesses' => 1,
                 'maxProcesses' => 10,

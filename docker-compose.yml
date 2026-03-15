@@ -40,9 +40,9 @@ services:
       MYSQL_PASSWORD: secret
       MYSQL_USER: microservice
     volumes:
-      - ./docker/mysql:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     ports:
-      - "3307:3306"
+      - "3308:3306"
     networks:
       - microservice-network
 
@@ -102,6 +102,8 @@ services:
 
 volumes:
   elasticsearch_data:
+    driver: local
+  mysql_data:
     driver: local
     
 networks:

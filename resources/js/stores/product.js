@@ -6,7 +6,8 @@ export const useProductStore = defineStore('product', {
     state: () => ({
         products: [],
         loading: false,
-        error: null
+        error: null,
+        importId: null
     }),
     actions: {
         async fetchProducts (page=1) {
@@ -127,7 +128,22 @@ export const useProductStore = defineStore('product', {
             } finally {
                 this.loading = false
             }
+        },
+        async importProducts(file) {
+            const formData = new FormData()
+            formData.append('file', file)
+            const response = await api.post('/products/import', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            })
+            this.importId = response.data.import_id
+            return response
+        },
+        clearImportId() {
+            this.importId = null
+        },
+        async getImportErrors() {
+            const response = await api.get(`/products/import/${this.importId}/errors`)
+            return response.data
         }
-        
     }
 })

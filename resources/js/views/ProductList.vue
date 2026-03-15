@@ -1,4 +1,9 @@
 <template>
+    <ImportProgressModal 
+        :importId="importId"
+        @close="productStore.clearImportId()"
+        @success="productStore.fetchProducts()"
+    />
     <div class="space-y-6">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-semibold text-gray-800">Products</h1>
@@ -78,6 +83,21 @@
             >
                 Add Product
             </router-link>
+            <input
+                ref="fileInput"
+                type="file"
+                id="file-input"
+                accept=".xlsx,.xls,.csv"
+                class="file-input"
+                @change="onFileSelected"
+            />
+            <button
+                type="button"
+                @click="fileInput?.click()"
+                class="inline-flex items-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+                Import Products
+            </button>
         </div>
 
         <div v-if="loading" class="text-gray-600">Loading...</div>
@@ -185,10 +205,11 @@ import { ref, onMounted } from 'vue'
 import { useProductStore } from '../stores/product'
 import { storeToRefs } from 'pinia'
 import Pagination from "../components/Pagination.vue";
+import ImportProgressModal from "../components/ImportProgressModal.vue";
 
-
+const fileInput = ref(null)
 const productStore = useProductStore()
-const { products, loading, error } = storeToRefs(productStore)
+const { products, loading, error, importId } = storeToRefs(productStore)
 const form = ref({
     query: '',
     inStock: false
@@ -205,6 +226,13 @@ const deleteProduct = id => {
     if (confirm('Are you sure you want to delete this product?')) {
         productStore.deleteProduct(id)
     }
+}
+
+const onFileSelected = (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    productStore.importProducts(file)
+    event.target.value = ''
 }
 
 const searchProduct = () => {
@@ -228,4 +256,11 @@ const imageUrl = product => {
     // files stored on "public" disk → served as /storage/{path}
     return `${base}/storage/${path}`
 }
+
 </script>
+
+<style scoped>
+    .file-input {
+        display: none;
+    }
+</style>
