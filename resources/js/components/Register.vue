@@ -40,7 +40,9 @@
           </div>
         </div>
       </div>
-      <button type="submit" class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Register</button>
+      <div class="flex items-center gap-2">
+        <button type="submit" class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Register</button>
+      </div>
     </form>
   </div>
 </template>
@@ -70,9 +72,20 @@ export default {
           this.password,
           this.password_confirmation
         );
-        this.$router.push('/'); // Перенаправление после успешной регистрации
+        console.log();
+        this.$router.push('/profile'); // Перенаправление после успешной регистрации
       } catch (error) {
         console.error('Registration failed:', error.response?.data || error);
+      }
+    }
+    ,
+    async fetchProfile () {
+      try {
+        const res = await authService.getProfile()
+        console.log('Profile response:', res.data)
+        this.$router.push('/profile')
+      } catch (error) {
+        console.error('Profile failed:', error?.response?.data || error)
       }
     }
   }

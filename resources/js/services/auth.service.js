@@ -12,6 +12,9 @@ export default {
             return response
         })
     },
+    getProfile () {
+        return api.get('/profile')
+    },
     logout () {
         const authStore = useAuthStore()
         return api.post('/logout').then(() => {

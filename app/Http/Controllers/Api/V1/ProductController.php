@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
+use App\Events\ProductChanged;
 class ProductController extends Controller
 {
     private $productService;
@@ -35,6 +36,7 @@ class ProductController extends Controller
             $payload['image_path'] = $path;
         }
         $product = $this->productService->createProduct($payload);
+        broadcast(new ProductChanged('created', (new ProductResource($product))->resolve()))->toOthers();
         return response()->json(new ProductResource($product), 201);
     }
 
@@ -52,12 +54,14 @@ class ProductController extends Controller
             $payload['image_path'] = $path;
         }
         $product = $this->productService->updateProduct($payload, $id);
+        broadcast(new ProductChanged('updated', (new ProductResource($product))->resolve()))->toOthers();
         return response()->json(new ProductResource($product));
     }
 
     public function destroy(int $id): JsonResponse
     {
         $this->productService->deleteProduct($id);
+        broadcast(new ProductChanged('deleted', null, $id))->toOthers();
         return response()->json(null, 204);
     }
 

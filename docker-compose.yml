@@ -99,6 +99,27 @@ services:
       - elasticsearch_data:/usr/share/elasticsearch/data
     networks:
       - microservice-network
+  # пример сервиса в docker-compose.yml
+  reverb:
+    build: .
+    container_name: microservice-reverb
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    command: php artisan reverb:start
+    environment:
+      REVERB_APP_ID: "${REVERB_APP_ID}"
+      REVERB_APP_KEY: "${REVERB_APP_KEY}"
+      REVERB_APP_SECRET: "${REVERB_APP_SECRET}"
+      REVERB_HOST: 0.0.0.0
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+    ports:
+      - "8081:8080"
+    networks:
+      - microservice-network
+    depends_on:
+      - app
 
 volumes:
   elasticsearch_data:

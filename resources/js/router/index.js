@@ -4,11 +4,17 @@ import ProductList from '../views/ProductList.vue'
 import ProductForm from '../views/ProductForm.vue'
 import RegisterForm from '../components/Register.vue'
 import LoginForm from '../components/Login.vue'
+const ProfileView = () => import('../views/Profile.vue')
 
 const routes = [
     {
         path: '/',
         redirect: '/products'
+    },
+    {
+        path: '/profile',
+        name: 'profile',
+        component: ProfileView
     },
     {
         path: '/login',

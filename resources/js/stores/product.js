@@ -30,7 +30,11 @@ export const useProductStore = defineStore('product', {
             this.loading = true
             try {
                 const response = await api.post('/products', productData)
-                this.products.push(response.data)
+                if (this.products?.data && Array.isArray(this.products.data)) {
+                    this.products.data.push(response.data)
+                } else {
+                    this.products = { data: [response.data], meta: null, links: null }
+                }
                 return response.data
             } catch (error) {
                 this.error = error
@@ -45,7 +49,11 @@ export const useProductStore = defineStore('product', {
                 const response = await api.post('/products', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 })
-                this.products.push(response.data)
+                if (this.products?.data && Array.isArray(this.products.data)) {
+                    this.products.data.push(response.data)
+                } else {
+                    this.products = { data: [response.data], meta: null, links: null }
+                }
                 return response.data
             } catch (error) {
                 this.error = error
@@ -94,7 +102,9 @@ export const useProductStore = defineStore('product', {
             this.loading = true
             try {
                 await api.delete(`/products/${id}`)
-                this.products = this.products.filter(p => p.id !== id)
+                if (this.products?.data && Array.isArray(this.products.data)) {
+                    this.products.data = this.products.data.filter(p => p.id !== id)
+                }
             } catch (error) {
                 this.error = error
                 throw error

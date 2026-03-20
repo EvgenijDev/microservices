@@ -15,11 +15,13 @@ api.interceptors.request.use((config) => {
         token = store?.token
     } catch (_) {
         // Pinia может быть не инициализирована в некоторых контекстах
+        // Добавил сюда коммент
     }
     token = token || localStorage.getItem('api_token')
     if (token) {
         config.headers.Authorization = `Bearer ${token}`
     }
+    console.log('Starting Request', config);
     return config
 })
 
@@ -32,6 +34,7 @@ api.interceptors.response.use(
                 window.location.href = '/login'
             }
         }
+
         return Promise.reject(error)
     }
 )

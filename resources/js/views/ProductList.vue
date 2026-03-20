@@ -201,7 +201,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useProductStore } from '../stores/product'
 import { storeToRefs } from 'pinia'
 import Pagination from "../components/Pagination.vue";
@@ -215,8 +215,20 @@ const form = ref({
     inStock: false
 })
 onMounted(() => {
-    productStore.fetchProducts()
-})
+    productStore.fetchProducts();
+    if (window.Echo) {
+        window.Echo.channel('products')
+            .listen('.product.changed', (e) => {
+                productStore.fetchProducts();
+            });
+    }
+});
+
+onUnmounted(() => {
+    if (window.Echo) {
+        window.Echo.leave('products');
+    }
+});
 
 const handlePageChange = (page) => {
   productStore.fetchProducts(page) // передаём номер страницы

@@ -52,7 +52,7 @@ yarn.lock
 # Docker данные
 /docker/mysql/*
 /docker/redis/*
-!/docker/nginx/default.conf  # Сохраняем только конфиг Nginx
+!/docker/nginx/default.conf
 
 # Временные файлы Docker
 docker-compose.override.yml
@@ -71,3 +71,10 @@ docker-compose.override.yml
 
 /.history
 /*.code-workspace
+
+
+docker/mysql/#*
+docker/mysql/*.ib*
+docker/mysql/*.dblwr
+
+docker/redis/*
