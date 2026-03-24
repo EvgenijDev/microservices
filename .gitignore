@@ -78,3 +78,8 @@ docker/mysql/*.ib*
 docker/mysql/*.dblwr
 
 docker/redis/*
+
+*.pem
+*.key
+id_rsa*
+id_ed25519*
